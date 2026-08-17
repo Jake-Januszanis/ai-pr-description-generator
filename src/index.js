@@ -1,15 +1,13 @@
 import "dotenv/config";
-import { getPullRequest } from "./getPullRequest.js";
-import { generateDescription } from "./descriptionGenerator.js";
-import { formatDescription } from "./formatDescription.js";
+import { parseCommand } from "./parseCommand.js";
 
-const pullRequest = await getPullRequest(
-  process.env.GITHUB_OWNER,
-  process.env.GITHUB_REPO,
-  Number(process.env.GITHUB_PR_NUMBER)
-);
+const comment = process.env.COMMENT_BODY;
 
-const description = await generateDescription(pullRequest);
-const formattedDescription = formatDescription(description);
+const { command } = parseCommand(comment);
 
-console.log(formattedDescription);
+if (!command) {
+  console.log("No recognized AI command.");
+  process.exit(0);
+}
+
+console.log(`Recognized command: ${command}`);

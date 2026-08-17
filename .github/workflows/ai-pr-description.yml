@@ -25,8 +25,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Read comment
+      - name: Process AI command
         env:
           COMMENT_BODY: ${{ github.event.comment.body }}
-        run: |
-          echo "Comment: $COMMENT_BODY"
+        run: npm start

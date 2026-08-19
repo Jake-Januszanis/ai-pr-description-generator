@@ -1,12 +1,18 @@
 import OpenAI from "openai";
-import { buildDescriptionPrompt } from "./prompt.js";
+import { buildGeneratePrompt, buildUpdatePrompt } from "./prompt.js";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-export async function generateDescription(pr) {
-  const prompt = buildDescriptionPrompt(pr);
+export async function generateDescription(pr, options) {
+  let prompt;
+
+  if (options.mode === "generate") {
+    prompt = buildGeneratePrompt(pr);
+  } else if (options.mode === "update") {
+    prompt = buildUpdatePrompt(pr, options.instructions);
+  }
 
   const response = await client.responses.create({
     model: "gpt-5-mini",

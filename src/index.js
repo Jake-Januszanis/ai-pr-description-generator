@@ -6,7 +6,7 @@ import { formatDescription } from "./formatDescription.js";
 import { updatePullRequest } from "./updatePullRequest.js";
 
 const comment = process.env.COMMENT_BODY;
-const { command } = parseCommand(comment);
+const { command, instructions } = parseCommand(comment);
 
 if (!command) {
   console.log("No recognized AI command.");
@@ -15,15 +15,21 @@ if (!command) {
 
 console.log(`Recognized command: ${command}`);
 
-if (command === "generate") {
-  const pullRequest = await getPullRequest(
-    process.env.GITHUB_OWNER,
-    process.env.GITHUB_REPO,
-    Number(process.env.GITHUB_PR_NUMBER)
-  );
+const pullRequest = await getPullRequest(
+  process.env.GITHUB_OWNER,
+  process.env.GITHUB_REPO,
+  Number(process.env.GITHUB_PR_NUMBER)
+);
 
-  const description = await generateDescription(pullRequest);
-  const formattedDescription = formatDescription(description);
+let description;
+
+if (command === "generate") {
+  description = await generateDescription(pullRequest, {mode: "generate"});
+} else if (command === "update") {
+  description = await generateDescription(pullRequest, {mode: "update", instructions});
+}
+
+ const formattedDescription = formatDescription(description);
 
   await updatePullRequest(
     process.env.GITHUB_OWNER,
@@ -33,4 +39,3 @@ if (command === "generate") {
   );
 
   console.log("PR description generated and updated.");
-}

@@ -13,9 +13,31 @@ describe("parseCommand", () => {
     });
   });
 
-  it("parses the update command", () => {
+  it("parses update command without instructions", () => {
     expect(parseCommand("/ai update")).toEqual({
-      command: "update"
+      command: "update",
+      instructions: ""
+    });
+  });
+
+  it("parses update command with instructions", () => {
+    expect(
+      parseCommand(
+        "/ai update\n\n- Add more detail about authentication.\n- Mention the new tests."
+      )
+    ).toEqual({
+      command: "update",
+      instructions:
+        "- Add more detail about authentication.\n- Mention the new tests."
+      });
+  });
+
+  it("preserves the casing of update instructions", () => {
+    expect(
+      parseCommand("/ai update\n\nAdd more detail about Authentication.")
+    ).toEqual({
+      command: "update",
+      instructions: "Add more detail about Authentication."
     });
   });
 

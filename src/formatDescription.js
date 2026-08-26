@@ -1,16 +1,19 @@
 
-
 export function formatDescription(description) {
   return `## Summary
 
 ${description.summary}
 
-## Changes
+${description.changes?.length
+  ? `## Changes
 
-${description.changes.map(change => `- ${change}`).join("\n")}
+${description.changes.map(change => `- ${change}`).join("\n")}`
+  : ""}
 
-## Testing
+${description.testing?.length
+  ? `## Testing
 
-${description.testing.map(test => `- ${test}`).join("\n")}
+${description.testing.map(test => `- ${test}`).join("\n")}`
+  : ""}
 `;
 }
